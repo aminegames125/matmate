@@ -1,4 +1,4 @@
-// This is a basic Flutter widget test.
+// This is a basic Flutter widget test for MatMate.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
 // utility in the flutter_test package. For example, you can send tap and scroll
@@ -7,24 +7,45 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:matmate/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('MatMate app smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the app title is displayed
+    expect(find.text('MatMate'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the main navigation tabs are present (using NavigationDestination)
+    expect(find.byType(NavigationDestination), findsNWidgets(3));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the input field is present
+    expect(find.byType(TextField), findsOneWidget);
+  });
+
+  testWidgets('MatMate basic input test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+
+    // Find the text field and enter a simple calculation
+    final textField = find.byType(TextField);
+    await tester.enterText(textField, '2 + 2');
+
+    // Verify the text was entered
+    expect(find.text('2 + 2'), findsOneWidget);
+  });
+
+  testWidgets('MatMate navigation structure test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+
+    // Verify navigation bar exists
+    expect(find.byType(NavigationBar), findsOneWidget);
+
+    // Verify navigation destinations exist
+    expect(find.byType(NavigationDestination), findsNWidgets(3));
   });
 }
